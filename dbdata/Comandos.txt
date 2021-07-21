@@ -1,0 +1,107 @@
+Para conectar no banco
+mongo --host 127.0.0.1:27017 -p dio -u dio
+
+Mostras BDs
+show databases
+
+Usar um banco de dados (Se não tiver ele cria)
+use fenda_biquini
+
+Criando uma Collection
+db.createCollection("teste", {capped: true, max: 2, size: 2});
+
+Ver as Collections
+show <nome da Collection>;
+
+Inserir dados na Collection
+db.test.insertOne({"name": "Teste 2"});
+
+Ver dados da Collection
+db.test.find
+
+Metodo BulkWrite
+db.clients.insert([{"name":"Patrick", "age": 38}, {"name":"Bob Esponja"}]);
+
+Atualizar dados
+db.clients.update({"name":"Bob Esponja"}, {$set :{"age":41}});
+
+Atualizar varios dados de uma só vez de acordo com parâmetro
+db.clients.update({"age":"41"}, {$set: {"age":43}}, {multi: true});
+
+Atualizar varios dados
+db.clients.updateMany({"age": 40},{$set: {"age": 55}});
+
+Consulta dados
+db.clients.find({"age": 33})
+db.clients.find({"age": 33}).limit(1) //somente o primeiro ao realizar o Match
+db.clients.find({"age": 33, "name": "Lula Molusco"}) //dois valores para Match
+
+Operador IN
+db.clients.find({"age": {$in: [30,41]}});
+
+Operador AND
+Não precisa usar na especifico, auto aplica no uso de um grupo de parâmetros 
+
+Operador OR
+db.clients.find({$or: [{"name": "Lula Molusco"},{"age": 55}]});
+
+Operador LT
+db.clients.find({"age": {$lt: 55}}); //trás valores a baixo do especificado
+
+Operador LTE
+db.clients.find({"age": {$lt: 55}}); //igual ou a baixo
+
+Delete
+db.clients.deleteOne({"age": 41}); //deleta somente o primeiro documento que tenha aquele parâmetro
+db.clients.deleteMany({"age": 41}); //deleta todos documentos que de Match com o comando
+
+População da tabela para Teste
+for(var i=0; i<10000; i++){
+    db.clients.insert({name: "Cliente" + i, age:i});
+    }
+
+Contar Registros
+db.getCollection('clients').count({})
+
+Explain (Busca por ID)
+db.getCollection('clients').find({_id: ObjectId("60f84c053b8f96abbafbdcbd")}).explain(true)
+
+Índice para o Collection Scan
+db.getCollection('clients').createIndex({name: 1}, {"name": "idx_name"})
+db.getCollection('clients').find({name: "Cliente0"}).explain(true)
+
+Distinct
+db.getCollection('restaurants').distinct("nome_do_campo")
+
+Agregações Group
+db.getCollection('restaurants').aggregate([{$group: {_id: "$nome_do_campo", total: {$sum: 1}}}]})
+
+AddField
+db.getCollection('restaurants').aggregate([{$addFields: {"teste": true}}])
+
+Max
+db.getCollection('restaurants').aggregate([{$group: {_id: "$nome_do_campo", total: {$sum: 1}, id_maximo: {$max: "$nome_do_campo"}}}]})
+
+Min
+db.getCollection('restaurants').aggregate([{$group: {_id: "$nome_do_campo", total: {$sum: 1}, id_maximo: {$min: "$nome_do_campo"}}}]})
+
+AVG
+db.getCollection('restaurants').aggregate([{$group: {_id: "$nome_do_campo", total: {$sum: 1}, id_maximo: {$avg: "$nome_do_campo"}}}]})
+
+And
+db.getCollection('restaurants').aggregate([{$match: {$and: "$nome_do_campo", {boraugh: "$nome_do_campo"}}}]})
+
+Or
+db.getCollection('restaurants').aggregate([{$match: {$or: "$nome_do_campo", {boraugh: "$nome_do_campo"}}}]})
+
+
+
+
+
+
+
+
+
+
+
+
